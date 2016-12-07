@@ -1,7 +1,14 @@
-basics = ["wget", "build-essential", "libgd-dev", "sendmail", "unzip"] # Debian flavor basics 
+basics = [ 'wget', 'build-essential', 'sendmail', 'unzip', 'libgd-dev' ] # Debian flavor basics 
 
-package "#{basics}" do
-	action :install
-	
+execute "update_apt_cache" do
+	command "apt-get update"
 end
 
+
+
+basics.each do |p| 
+ package "#{p}" do
+    	action :install
+	
+ end
+end
