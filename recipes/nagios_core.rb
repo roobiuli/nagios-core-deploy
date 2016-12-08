@@ -79,11 +79,72 @@ include_recipe "nagios-core::nagios-plugins"
 ## Nagios Quick Configure in this section
 
 
+directory "/usr/local/nagios/etc/servers" do
+	action :create
+	owner "nagios"
+	group "nagios"
+	mode 0755
+end
+
+
+template "/usr/local/nagios/etc/nagios.cfg" do
+	source "nagios.cfg.erb"
+	owner "nagios"
+	group "nagios"
+	mode 0664
+end
+
+
+template "/usr/local/nagios/etc/objects/contacts.cfg" do
+	source "contacts.cfg.erb"
+	owner "nagios"
+	group "nagios"
+	mode 0644
+end
+
+
+template "/etc/init.d/nagios" do
+	source "initnagios.erb"
+	owner "root"
+	group "root"
+	mode 0755
+end
+
+
 #
 
 
 
 # Apache configure for nagios in this section 
+template "/usr/local/nagios/etc/htpasswd.users" do
+	source "htpasswd.users.erb"
+	owner "nagios"
+	group "nagios"
+	mode 0644
+end
 
+execute "enable_cgi_re_write" do
+	command "a2enmod rewrite && a2enmod cgi"
+	not_if 'test -f /etc/apache2/mods-enabled/rewrite.load'
+end
+
+
+if File.exist?("/etc/apache2/sites-available/nagios.conf")
+
+
+	execute "Nagios_apache_site_enable" do
+	command "ln -s /etc/apache2/sites-available/nagios.conf /etc/apache2/sites-enabled/"
+	notifies :restart, "service[apache2]", :immediately
+	not_if 'test -f /etc/apache2/sites-available/nagios.conf'
+
+	end
+
+
+end
+
+
+service "nagios" do
+	action :start
+end
 
 #

@@ -1,4 +1,4 @@
-basics = [ 'wget', 'build-essential', 'sendmail', 'unzip', 'libgd-dev' ] # Debian flavor basics 
+basics = [ 'wget', 'build-essential', 'unzip', 'libgd-dev' ] # Debian flavor basics 
 
 execute "update_apt_cache" do
 	command "apt-get update"

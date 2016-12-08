@@ -19,3 +19,7 @@ packages.each do |pr|
 
  end
 end
+
+service "apache2" do
+	action [:enable, :start]
+	end
